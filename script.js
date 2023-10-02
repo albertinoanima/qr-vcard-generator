@@ -17,6 +17,9 @@ formInline.on('input', () => {
   const phoneBusiness = $('#phoneBusiness').val();
   const phoneBusinessVal = 'TEL%3BWORK%3BVOICE%3A' + phoneBusiness + '%0A';
 
+  const emailPersonal = $('#emailPersonal').val();
+  const emailPersonalVal = 'EMAIL%3BHOME%3BINTERNET%3A' + emailPersonal + '%0A';
+
   const emailBusiness = $('#emailBusiness').val();
   const emailBusinessVal = 'EMAIL%3BWORK%3BINTERNET%3A' + emailBusiness + '%0A';
 
@@ -39,7 +42,23 @@ formInline.on('input', () => {
   
   const qrUrlStart = 'https://api.qrserver.com/v1/create-qr-code/?data=BEGIN%3AVCARD%0AVERSION%3A2.1%0A';
   const qrUrlEnd = 'END%3AVCARD%0A';
-  const qrURL = qrUrlStart + fnVal + nVal + posTitleVal + phoneBusinessVal + phonePersonalVal + emailBusinessVal + websiteVal + adrVal + coNameVal + qrUrlEnd;
+  const qrURL = qrUrlStart + fnVal + nVal + posTitleVal + phoneBusinessVal + phonePersonalVal + emailPersonalVal + emailBusinessVal + websiteVal + adrVal + coNameVal + qrUrlEnd;
   $('.qr-img').attr('src', qrURL);
-  $('.biscard-out').html('<div class="biscard-img"><h3>' + firstName + ' ' + lastName + '</h3><div>' + posTitle + ' | ' + coName + '</div><div class="phone">w: <a href="tel:+1-' + phoneBusiness + '">' + phoneBusiness + '</a> | c: <a href="tel:+1-' + phonePersonal + '">' + phonePersonal + '</a></div><div class="email"><a href="mailto:' + emailBusiness + '">' + emailBusiness + '</a></div></div>');
+  $('.biscard-out').html(`
+    <div class="biscard-img">
+      <h3>${firstName + ' ' + lastName}</h3>
+      <div>${posTitle + ' | ' + coName}</div>
+      <div class="phone">
+        w: <a href="tel:+1-${phoneBusiness}">${phoneBusiness}</a> | 
+        c: <a href="tel:+1-${phonePersonal}">${phonePersonal}</a>
+      </div>
+      <div class="email">
+        <a href="mailto:${emailPersonal}">
+          ${emailPersonal}
+        </a> | 
+        <a href="mailto:${emailBusiness}">
+          ${emailBusiness}
+        </a> 
+      </div>
+    </div>`);
 })
