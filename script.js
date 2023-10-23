@@ -113,7 +113,7 @@ function excuteInstruction() {
 
   localStorage.setItem("data", encondedStringData);
   const qrImg = document.getElementById("qr-img");
-  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${window.location.href}/?key=data`;
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${window.location.href}?key=data`;
 
   /*
   const qrImg = document.getElementById("qr-img");
