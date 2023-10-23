@@ -1,3 +1,39 @@
+const savedKey = "saved";
+window.onload = () => {
+  // Get the query string part of the current URL
+  const queryString = window.location.search;
+
+  // Parse the query string into an object
+  const urlParams = new URLSearchParams(queryString);
+
+  // Access parameters by name
+  const keyData = urlParams.get("key");
+  if (keyData === "data") {
+    const theData = localStorage.getItem(keyData);
+
+    // Create a Blob containing the vCard data
+    const blob = new Blob([theData], { type: 'text/vcard' });
+
+    // Create a URL for the Blob
+    const blobURL = URL.createObjectURL(blob);
+
+    // Create a download link
+    const a = document.createElement('a');
+    a.href = blobURL;
+    a.download = 'contact.vcf'; // Set the filename for the download
+
+    // Append the link to the document
+    document.body.appendChild(a);
+
+    // Simulate a click to trigger the download
+    a.click();
+
+    // Clean up by revoking the Blob URL
+    URL.revokeObjectURL(blobURL);
+  }
+
+}
+
 const formInline = $('.form-inline');
 formInline.on('input', () => {
   const name = $('#firstName').val();
@@ -30,21 +66,37 @@ formInline.on('input', () => {
 });
 
 function excuteInstruction() {
-  const name              = String($('#firstName').val());
-  const surname           = String($('#lastName').val());
-  const jobTitle          = String($('#posTitle').val());
-  const company           = String($('#coName').val());
-  const personalPhone     = String($('#phonePersonal').val());
-  const businessPhone     = String($('#phoneBusiness').val());
-  const personalEmail     = String($('#emailPersonal').val());
+  const name = String($('#firstName').val());
+  const surname = String($('#lastName').val());
+  const jobTitle = String($('#posTitle').val());
+  const company = String($('#coName').val());
+  const personalPhone = String($('#phonePersonal').val());
+  const businessPhone = String($('#phoneBusiness').val());
+  const personalEmail = String($('#emailPersonal').val());
   const professionalEmail = String($('#emailBusiness').val());
-  const website           = String($('#website').val());
+  const website = String($('#website').val());
 
-  const street            = String($('#addyStreet').val());
-  const city              = String($('#addyCity').val());
-  const country           = String($('#addyCountry').val());
+  const street = String($('#addyStreet').val());
+  const city = String($('#addyCity').val());
+  const country = String($('#addyCountry').val());
 
-  const encondedStringData = encodeURIComponent(generateVCardString(
+  // const encondedStringData = encodeURIComponent(generateVCardString(
+  //   name,
+  //   surname,
+  //   jobTitle,
+  //   company,
+  //   personalPhone,
+  //   businessPhone,
+  //   personalEmail,
+  //   professionalEmail,
+  //   website,
+  //   city,
+  //   country,
+  //   street
+  // ));
+
+
+  const encondedStringData = generateVCardString(
     name,
     surname,
     jobTitle,
@@ -57,10 +109,16 @@ function excuteInstruction() {
     city,
     country,
     street
-  ));
+  );
 
+  localStorage.setItem("data", encondedStringData);
+  const qrImg = document.getElementById("qr-img");
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${window.location.href}/?key=data`;
+
+  /*
   const qrImg = document.getElementById("qr-img");
   qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encondedStringData}`;
+  */
 };
 
 // Create a function that generates a VCard string.
