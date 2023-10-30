@@ -1,3 +1,28 @@
+window.onload = () => {
+  // Get the query string part of the current URL
+  const queryString = window.location.search;
+
+  // Parse the query string into an object
+  const urlParams = new URLSearchParams(queryString);
+
+  // Access parameters by name
+  const keyData = urlParams.get("key");
+  if (keyData === "data") {
+    const theData = localStorage.getItem(keyData);
+    if (theData !== null) {
+      const encodedData = encodeURIComponent(theData);
+      const dataURL = `data:text/vcard;charset=utf-8,${encodedData}`;
+
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.innerText = 'Import Contact'; // You can customize the link text
+
+      // Simulate a click event to open the contacts app automatically
+      a.click();
+    }
+  }
+}
+
 const formInline = $('.form-inline');
 formInline.on('input', () => {
   const name = $('#firstName').val();
@@ -30,21 +55,21 @@ formInline.on('input', () => {
 });
 
 function excuteInstruction() {
-  const name              = String($('#firstName').val());
-  const surname           = String($('#lastName').val());
-  const jobTitle          = String($('#posTitle').val());
-  const company           = String($('#coName').val());
-  const personalPhone     = String($('#phonePersonal').val());
-  const businessPhone     = String($('#phoneBusiness').val());
-  const personalEmail     = String($('#emailPersonal').val());
+  const name = String($('#firstName').val());
+  const surname = String($('#lastName').val());
+  const jobTitle = String($('#posTitle').val());
+  const company = String($('#coName').val());
+  const personalPhone = String($('#phonePersonal').val());
+  const businessPhone = String($('#phoneBusiness').val());
+  const personalEmail = String($('#emailPersonal').val());
   const professionalEmail = String($('#emailBusiness').val());
-  const website           = String($('#website').val());
+  const website = String($('#website').val());
 
-  const street            = String($('#addyStreet').val());
-  const city              = String($('#addyCity').val());
-  const country           = String($('#addyCountry').val());
+  const street = String($('#addyStreet').val());
+  const city = String($('#addyCity').val());
+  const country = String($('#addyCountry').val());
 
-  const encondedStringData = encodeURIComponent(generateVCardString(
+  const encondedStringData = generateVCardString(
     name,
     surname,
     jobTitle,
@@ -57,11 +82,13 @@ function excuteInstruction() {
     city,
     country,
     street
-  ));
+  );
 
+  localStorage.setItem("data", encondedStringData);
   const qrImg = document.getElementById("qr-img");
-  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encondedStringData}`;
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${window.location.href}?key=data`;
 };
+
 
 // Create a function that generates a VCard string.
 function generateVCardString(name, surname, jobTitle, company, personalPhone, businessPhone, personalEmail, professionalEmail, website, city, country, street) {
@@ -80,28 +107,3 @@ ADR;TYPE=WORK:;;${street};${city};${country}
 END:VCARD`;
   return vcardString;
 }
-
-/*
-// Convert the special characters to UTF-8.
-const encodedString = encodeURIComponent(generateVCardString(
-  'João',
-  'Da Graça',
-  'Função',
-  'Anima',
-  '+258848131298',
-  '+258848131298',
-  'albertinoaugusto@anima.co.mz',
-  'albertinoaugusto@anima.co.mz',
-  'https://albertinoaugusto.co.mz',
-  'Mountain View',
-  'CA',
-  '94043',
-  'USA',
-  '123 Main Street'
-));
-
-setTimeout(() => {
-  const qrImg = document.getElementById("qr-img");
-  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodedString}`;
-}, 2000)
-*/
