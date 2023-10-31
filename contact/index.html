@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Informações de Contacto</title>
+
+  <meta name="Keywords" content="Anima">
+  <meta name="Description" content="Informações de Contacto">
+  <meta property="og:image" content="https://www.w3schools.com/images/w3schools_logo_436_2.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="436">
+  <meta property="og:image:height" content="228">
+  <meta property="og:description" content="Informações de Contacto">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contact-box {
+      width: 100%;
+      height: 100vh;
+      max-width: 350px;
+      padding-left: 20px;
+      padding-right: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-box {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-box img {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .text-box {
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .mails-box {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .text-box .small {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .text-box .normal {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    #downloadButton {
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      outline: none;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px 10px 15px;
+      background-color: black;
+    }
+
+    .normalenfase {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="contact-box">
+      <div class="avatar-box">
+        <img src="../images/avatar.png" id="pic"/>
+      </div>
+      <div id="content-box">
+        <div class="text-box">
+          <span class="normalenfase">Nome Apelido</span><br />
+          <span class="small">ANIMA</span>
+        </div>
+        <div class="text-box">
+          <span class="normal">Cargo</span>
+        </div>
+        <div class="text-box">
+          <span class="none">Cell | Cell</span>
+        </div>
+        <div class="text-box mails-box">
+          <span class="normal">email</span>
+          <span class="normal">email</span>
+        </div>
+        <div class="text-box">
+          <span class="normal">www.site.com</span>
+        </div>
+        <div class="text-box">
+          <span class="normal">Pais, Provincia</span><br />
+          <span class="normal">Endereço Completo</span>
+        </div>
+      </div>
+
+      <button id="downloadButton">Salvar Contacto</button>
+    </div>
+  </div>
+
+
+
+  <script>
+    const query = new URLSearchParams(window.location.search);
+    window.onload = () => {
+      const id = query.get("id");
+      const collaborator = getCollaborator(id);
+      if (collaborator !== null) {
+        showData(collaborator);
+      }
+    }
+
+    const getCollaborator = (id) => {
+      const filteredCollaborators = collaborators.filter(c => c.id === id);
+      if (filteredCollaborators.length > 0) {
+        return filteredCollaborators[0];
+      }
+
+      return null;
+    }
+
+    const showData = (collaborator) => {
+      const { name, surname, jobTitle, company, personalPhone, businessPhone, personalEmail, professionalEmail, website, city, country, street, picUrl } = collaborator;
+
+      const imageBox = document.getElementById("pic");
+      imageBox.src = picUrl;
+
+      const contactBox = document.getElementById("content-box");
+      contactBox.innerHTML = `
+        <div class="text-box">
+          <span class="normalenfase">${name + " " + surname}</span><br />
+          <span class="small">${company}</span>
+        </div>
+        <div class="text-box">
+          <span class="normal">${jobTitle}</span>
+        </div>
+        <div class="text-box">
+          <span class="none">${personalPhone} | ${businessPhone}</span>
+        </div>
+        <div class="text-box mails-box">
+          <span class="normal">${personalEmail}</span>
+          <span class="normal">${professionalEmail}</span>
+        </div>
+        <div class="text-box">
+          <span class="normal">${website}</span>
+        </div>
+        <div class="text-box">
+          <span class="normal">${country}, ${city}</span><br />
+          <span class="normal">${street}</span>
+        </div>
+      `;
+    }
+
+
+    // Function to generate and download a vCard
+    const generateAndDownloadVCard = () => {
+      const id = query.get("id");
+      const collaborator = getCollaborator(id);
+      if (collaborator !== null) {
+        const { name, surname, jobTitle, company, personalPhone, businessPhone, personalEmail, professionalEmail, website, city, country, street } = collaborator;
+
+        const vcardString = `BEGIN:VCARD
+VERSION:3.0
+N:${name};${surname}
+FN:${name} ${surname}
+TITLE:${jobTitle}
+ORG:${company}
+TEL;TYPE=VOICE;HOME:${personalPhone}
+TEL;TYPE=VOICE;WORK:${businessPhone}
+EMAIL;TYPE=HOME:${personalEmail}
+EMAIL;TYPE=WORK:${professionalEmail}
+URL:${website}
+ADR;TYPE=WORK:;;${street};${city};${country}
+END:VCARD`;
+
+        const blob = new Blob([vcardString], { type: 'text/vcard' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'contact.vcf';
+        document.body.appendChild(a);
+
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      }
+    }
+
+    const downloadButton = document.getElementById('downloadButton');
+    downloadButton.addEventListener('click', generateAndDownloadVCard);
+
+    const collaborators = [
+      {
+        "id": "1",
+        "name": "Albertino",
+        "surname": "Augusto",
+        "jobTitle": "Software Engeneer",
+        "company": "ANIMA",
+        "personalPhone": "861476671",
+        "businessPhone": "848131298",
+        "personalEmail": "albertinoaugusto.it@outlook.com",
+        "professionalEmail": "albertinoaugusto@anima.co.mz",
+        "website": "www.albertinoaugusto.com",
+        "city": "Maputo",
+        "country": "Mozambique",
+        "street": "Tomás Nduda",
+        "picUrl": "../images/avatar.png"
+      }
+    ]
+  </script>
+</body>
+
+</html>
